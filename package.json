@@ -1,0 +1,25 @@
+{
+  "name": "@npm/npme-auth-github",
+  "version": "0.0.0",
+  "description": "GitHub authentication and authorization strategy for npm Enterprise",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npm/npme-auth-github.git"
+  },
+  "scripts": {
+    "test": "lab -v -c --timeout 4000 test/"
+  },
+  "dependencies": {
+    "@npm/enterprise-configurator": "~0.1.8",
+    "bluebird": "^2.3.6",
+    "github": "^0.2.2",
+    "github-url-from-git": "^1.4.0",
+    "lodash": "^2.4.1",
+    "request": "^2.47.0"
+  },
+  "devDependencies": {
+    "code": "^1.2.0",
+    "lab": "^3.2.3",
+    "nock": "^0.48.1"
+  }
+}
