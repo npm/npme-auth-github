@@ -19,7 +19,6 @@
     "request": "^2.47.0"
   },
   "devDependencies": {
-    "code": "^1.2.0",
     "lab": "^3.2.3",
     "nock": "^0.48.1"
   }
