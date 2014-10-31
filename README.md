@@ -129,3 +129,124 @@ Authenticator.prototype.authenticate = function(credentials, cb) {
   });
 };
 ```
+
+## Implementing your own authorization strategy
+
+### npm Enterprise authorization flow
+
+1. With each request npm CLI makes it sends a token previously received from the
+frontdoor by the way of `npm login`.
+2. Unless specified otherwise, frontdoor checks the authorization token on
+every request by calling the authentication webservice.
+3. Authentication webservice calls its configured authorization strategy, passing
+the token to it and request context to it.
+4. Authorization strategy either returns whether authorization was successful
+or not.
+5. If authorization succeeded, frontdoor allows the request to go through.
+
+### Authorization strategy API
+
+Your module needs to export an `Authorizer` property. `Authorizer` is called
+with an object containing options for the running npm Enterprise instance
+and needs to return an object with an `authorize` function, for example:
+
+```js
+var Authorizer = exports.Authorizer = function(opts) {
+};
+
+Authorizer.prototype.authorize = function(credentials, cb) {
+};
+```
+
+or
+
+```js
+exports.Authorizer = function (opts) {
+  function authorize(credentials, cb) {
+  }
+
+  return {
+    authorize: authorize
+  };
+};
+```
+
+The `authorize` function is called with an object that looks similar to this:
+
+```js
+{
+  path: '/mymodule',
+  method: 'PUT',
+  headers: {
+    // ...
+    referer: 'npm publish',
+    authorization: 'Bearer ...'
+  },
+  body: {
+    // request body
+  }
+}
+```
+
+Basing on this, you should authorize the user.
+
+If authorization succeeds, you should call the callback with no error and `true`.
+
+```js
+cb(null, true);
+```
+
+If authorization fails, you should call the callback with no error and `false`.
+
+```js
+cb(null, false);
+```
+
+If authorization errors out (for example, your internal authorization server
+is down, you should call the callback with an error object:
+
+```js
+cb(new Error('Internal authorization server unreachable'));
+```
+
+So, here's an example of using an abstract HTTP authorization service:
+
+```js
+var request = require('request');
+
+var Authorizer = exports.Authorizer = function(opts) {
+  this.myAuthorizationHost = opts.myAuthorizationHost;
+};
+
+Authorizer.prototype.authenticate = function(credentials, cb) {
+  if (!credentials.headers.authorization ||
+      !credentials.headers.authorization.match(/Bearer /)) {
+    return cb(null, false);
+  }
+
+  request({
+    url: this.myAuthenticationHost + '/authorize',
+    method: 'POST',
+    json: true,
+    body: {
+      token: credentials.headers.authorization.replace('Bearer ', '')
+    }
+  }, function (err, res, body) {
+    if (err) {
+      return cb(err);
+    }
+
+    if (res.statusCode !== 200) {
+      return cb(null, false);
+    }
+
+    return cb(null, true);
+  });
+};
+```
+
+Since you have access to the `package.json`, if one is being sent by npm,
+your authorization can involve various checks based on it. For example, GitHub
+authorization plugin uses the `repository` field in connection with using GitHub
+token as the authorization token to determine if user has write access to the
+package they are trying to publish.
