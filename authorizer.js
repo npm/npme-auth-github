@@ -153,7 +153,7 @@ AuthorizeGithub.prototype.parseGitUrl = function(packageJSON) {
       if (url.match(/^git:\/\//)) url = parseGitUrl(url, {extraBaseUrls: /[^/]+/.source});
 
       var parsedUrl = parseUrl.parse(url),
-        splitOrgRepo = parsedUrl.path.match(/^\/(.*)\/([^.]*)(\.git)?$/);
+        splitOrgRepo = parsedUrl.path.split('.git')[0].match(/^\/(.*)\/(.*)$/);
 
       if (!splitOrgRepo) throw Error("does not appear to be a valid git url.");
       resolve({

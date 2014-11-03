@@ -68,7 +68,8 @@ AuthorizeGithub.prototype.getAuthorizationToken = function(username, password, t
   return new Promise(function(resolve, reject) {
     github.authorization.create({
       scopes: ["user", "public_repo", "repo", "repo:status", "gist"],
-      note: _this.note,
+      // timestamp helps prevent duplicate tokens.
+      note: _this.note + ' (' + new Date().getTime() + ')',
       note_url: _this.noteUrl,
       headers: {
         "X-GitHub-OTP": twoFactorCode
