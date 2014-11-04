@@ -16,6 +16,9 @@ function AuthorizeGithub(opts) {
   }, opts);
 }
 
+// Reach out to GitHub API to authenticate the user. Create an authorization
+// token and pass it back as it is, allowing the authorizer to verify it through
+// GitHub API later on.
 AuthorizeGithub.prototype.authenticate = function(credentials, cb) {
   if (!this._validateCredentials(credentials)) return cb(Error('invalid credentials format'));
 
@@ -55,6 +58,7 @@ AuthorizeGithub.prototype._validateCredentials = function(credentials) {
   return true;
 };
 
+// Actually create the authorization token.
 AuthorizeGithub.prototype.getAuthorizationToken = function(username, password, twoFactorCode) {
   var _this = this,
     github = createGithubApi(this);

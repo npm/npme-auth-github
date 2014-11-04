@@ -18,10 +18,15 @@ function SessionGithub(opts) {
 SessionGithub.prototype.get = function(key, cb) {
   var _this = this;
 
+  // First check if we have the session in Redis.
   this.client.get(key, function(err, data) {
     if (err) cb(err);
+    // If we do, simply return the existing session.
     else if (data) cb(null, JSON.parse(data));
-    else { // attempt to lookup user in GHE.
+    else {
+      // If we don't, talk to GHE instance. This can happen when, for example,
+      // user tries logging into a different npm Enterprise instance with an
+      // existing, logged in .npmrc.
       _this._githubLookup(key, cb);
     }
   });
@@ -33,6 +38,8 @@ SessionGithub.prototype._githubLookup = function(key, cb) {
     // extract the GHE key from the user-<token> string.
     token = key.split('-').splice(1).join('-');
 
+  // the token authenticator creates is a GitHub OAuth token, so we can simply
+  // try authenticating with it and then fetching the authenticated user.
   github.authenticate({
     type: 'oauth',
     token: token
@@ -47,6 +54,8 @@ SessionGithub.prototype._githubLookup = function(key, cb) {
         email: res.email
       };
 
+      // If authentication with GitHub succeeded, persist the GitHub login and
+      // email in our session store.
       _this.set(key, session, function(err) {
         if (err) cb(err);
         else cb(undefined, session);
