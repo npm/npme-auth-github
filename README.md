@@ -218,14 +218,14 @@ var Authorizer = exports.Authorizer = function(opts) {
   this.myAuthorizationHost = opts.myAuthorizationHost;
 };
 
-Authorizer.prototype.authenticate = function(credentials, cb) {
+Authorizer.prototype.authorize = function(credentials, cb) {
   if (!credentials.headers.authorization ||
       !credentials.headers.authorization.match(/Bearer /)) {
     return cb(null, false);
   }
 
   request({
-    url: this.myAuthenticationHost + '/authorize',
+    url: this.myAuthorizationHost + '/authorize',
     method: 'POST',
     json: true,
     body: {
@@ -250,3 +250,160 @@ your authorization can involve various checks based on it. For example, GitHub
 authorization plugin uses the `repository` field in connection with using GitHub
 token as the authorization token to determine if user has write access to the
 package they are trying to publish.
+
+## Implementing your own session handler
+
+Session handler is used by the authentication webservice to persist user's name
+and email, keyed by the token created by the authentication strategy.
+
+The point of creating custom session handlers is to provide strategy-specific
+fallbacks for when user tries authorizing requests against an npm Enterprise
+instance without the token present in the session store.  
+For example, GitHub strategy provides a custom session store which first checks
+Redis for the token, and if it's not present there, it attempts to authenticate
+with GitHub with the same token. If GitHub authentication succeeds, user's
+GitHub email and login are persisted back to Redis.
+
+### npm Enterprise session flow
+
+#### Authentication
+
+See [npm Enterprise authentication flow](#npm-enterprise-authentication-flow)
+for exact description of the authentication flow.
+
+1. Frontdoor host calls the authentication webservice with a payload including
+the credentials user input.
+2. Authentication webservice calls its configured authentication strategy, passing
+the payload received to it.
+3. If authentication strategy succeeds, a token is returned.
+4. Session handler is called with a key (in form of `"user-" + token`), and
+session data to persist.
+
+#### Authorization
+
+See [npm Enterprise authorization flow](#npm-enterprise-authorization-flow)
+for exact description of the authorization flow.
+
+1. With each request npm CLI makes it sends a token previously received from the
+frontdoor by the way of `npm login`.
+2. Unless specified otherwise, frontdoor checks the authorization token on
+every request by calling the authentication webservice.
+3. Authentication webservice calls its configured authorization strategy, passing
+the token to it and request context to it.
+4. Authorization strategy either returns whether authorization was successful
+or not.
+5. If authorization succeeded, session store is called with a key (in form of
+`"user-" + token`) to retrieve.
+
+### Session handler API
+Your module needs to export a `Session` property. `Session` is called with an
+object containing options for the running npm Enterprise instance and needs to
+return an object with `get` and `set` functions.
+
+```js
+var Session = exports.Session = function(opts) {
+};
+
+Session.prototype.get = function(key, cb) {
+};
+
+Session.prototype.set = function(key, session, cb) {
+};
+```
+
+or
+
+```js
+exports.Session = function (opts) {
+  function get(key, cb) {
+  }
+
+  function set(key, session, cb) {
+  }
+
+  return {
+    get: get,
+    set: set
+  };
+};
+```
+
+The `get` function is called with a key to retrieve from the session store.
+If getting the key from session store succeeds, you should call the callback
+with the key content.
+
+```js
+cb(null, {
+  name: 'foobar',
+  email: 'foobar@mycorp.com'
+});
+```
+
+If getting the key fails, you should call the callback with an error.
+
+```js
+cb(new Error('No such key'));
+```
+
+The `set` function is called with a key and data to persist into the session
+store. If storing the key succeeds, you should call the callback without an
+error. If storing the key fails, you should call the callback with an error.
+
+Here's an example of using a Redis-based session store, which fails over to
+an abstract HTTP-based authorization service:
+
+```js
+var request = require('request');
+var redis = require('redis');
+
+var Session = exports.Session = function(opts) {
+  this.myAuthorizationHost = opts.myAuthorizationHost;
+  this.redis = redis.createClient();
+};
+
+Session.prototype._lookup = function(key, cb) {
+  var self = this;
+
+  request({
+    url: this.myAuthenticationHost + '/authorize',
+    method: 'POST',
+    json: true,
+    body: {
+      token: key.split('-').splice(1).join('-')
+    }
+  }, function (err, res, body) {
+    if (err) {
+      return cb(err);
+    }
+
+    if (res.statusCode !== 200) {
+      return cb(new Error('Authorization failed'));
+    }
+
+    var session = {
+      name: body.username,
+      email: body.email
+    };
+
+    self.set(key, session, function (err) {
+      if (err) {
+        return cb(err);
+      }
+      cb(null, session);
+    });
+  });
+};
+
+Session.prototype.get = function(key, cb) {
+  var self = this;
+  this.client.get(key, function(err, data) {
+    if (err) return cb(err);
+    if (data) return cb(null, JSON.parse(data));
+    self._lookup(key, cb);
+  });
+};
+
+Session.prototype.set = function(key, session, cb) {
+  this.client.set(key, JSON.stringify(session), cb);
+};
+```
