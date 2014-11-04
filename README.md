@@ -142,7 +142,8 @@ every request by calling the authentication webservice.
 the token to it and request context to it.
 4. Authorization strategy either returns whether authorization was successful
 or not.
-5. If authorization succeeded, frontdoor allows the request to go through.
+5. If authorization succeeded, and session store has a session for this token,
+frontdoor allows the request to go through.
 
 ### Authorization strategy API
 
@@ -203,7 +204,7 @@ cb(null, false);
 ```
 
 If authorization errors out (for example, your internal authorization server
-is down, you should call the callback with an error object:
+is down), you should call the callback with an error object:
 
 ```js
 cb(new Error('Internal authorization server unreachable'));
@@ -289,9 +290,8 @@ frontdoor by the way of `npm login`.
 2. Unless specified otherwise, frontdoor checks the authorization token on
 every request by calling the authentication webservice.
 3. Authentication webservice calls its configured authorization strategy, passing
-the token to it and request context to it.
-4. Authorization strategy either returns whether authorization was successful
-or not.
+the token and request context to it.
+4. Authorization strategy returns whether authorization was successful or not.
 5. If authorization succeeded, session store is called with a key (in form of
 `"user-" + token`) to retrieve.
 
@@ -330,7 +330,7 @@ exports.Session = function (opts) {
 
 The `get` function is called with a key to retrieve from the session store.
 If getting the key from session store succeeds, you should call the callback
-with the key content.
+with the session content.
 
 ```js
 cb(null, {
