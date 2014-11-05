@@ -93,6 +93,8 @@ Lab.experiment('loadPackageJSON', function() {
   });
 
   Lab.test('gracefully handles request returning an error', function(done) {
+    nock.cleanAll();
+    
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
       packagePath: '/@npm/foobar'

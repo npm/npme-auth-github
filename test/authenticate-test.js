@@ -6,7 +6,10 @@ var Lab = require('lab'),
 Lab.experiment('getAuthorizationToken', function() {
   Lab.it("returns authorization token if username and password are valid", function(done) {
     var authenticateGithub = new AuthenticateGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      timestamp: function() {
+        return 0;
+      }
     });
 
     var packageApi = nock('https://github.example.com', {
@@ -18,7 +21,7 @@ Lab.experiment('getAuthorizationToken', function() {
       })
       .post('/api/v3/authorizations', {
         scopes: ["user","public_repo","repo","repo:status","gist"],
-        note: 'npm on premises solution',
+        note: 'npm on premises solution (0)',
         note_url: 'https://www.npmjs.org'
       })
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
@@ -32,7 +35,10 @@ Lab.experiment('getAuthorizationToken', function() {
 
   Lab.it("uses port parsed from githubHost", function(done) {
     var authenticateGithub = new AuthenticateGithub({
-      githubHost: 'https://github.example.com:4444'
+      githubHost: 'https://github.example.com:4444',
+      timestamp: function() {
+        return 0;
+      }
     });
 
     var packageApi = nock('https://github.example.com:4444', {
@@ -44,7 +50,7 @@ Lab.experiment('getAuthorizationToken', function() {
       })
       .post('/api/v3/authorizations', {
         scopes: ["user","public_repo","repo","repo:status","gist"],
-        note: 'npm on premises solution',
+        note: 'npm on premises solution (0)',
         note_url: 'https://www.npmjs.org'
       })
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
@@ -58,7 +64,10 @@ Lab.experiment('getAuthorizationToken', function() {
 
   Lab.it("raises an exception if 401 is returned", function(done) {
     var authenticateGithub = new AuthenticateGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      timestamp: function() {
+        return 0;
+      }
     });
 
     var packageApi = nock('https://github.example.com')
@@ -74,7 +83,10 @@ Lab.experiment('getAuthorizationToken', function() {
 
   Lab.it("raises an exception if 500 is returned", function(done) {
     var authenticateGithub = new AuthenticateGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      timestamp: function() {
+        return 0;
+      }
     });
 
     var packageApi = nock('https://github.example.com')
@@ -91,7 +103,10 @@ Lab.experiment('getAuthorizationToken', function() {
 Lab.experiment('authenticate', function() {
   Lab.it('executes callback with token, if successful', function(done) {
     var authenticateGithub = new AuthenticateGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      timestamp: function() {
+        return 0;
+      }
     });
 
     var packageApi = nock('https://github.example.com', {
@@ -103,7 +118,7 @@ Lab.experiment('authenticate', function() {
       })
       .post('/api/v3/authorizations', {
         scopes: ["user","public_repo","repo","repo:status","gist"],
-        note: 'npm on premises solution',
+        note: 'npm on premises solution (0)',
         note_url: 'https://www.npmjs.org'
       })
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
@@ -122,7 +137,10 @@ Lab.experiment('authenticate', function() {
 
   Lab.it('executes callback with error if GHE API fails to generate token', function(done) {
     var authenticateGithub = new AuthenticateGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      timestamp: function() {
+        return 0;
+      }
     });
 
     var packageApi = nock('https://github.example.com')
@@ -143,7 +161,10 @@ Lab.experiment('authenticate', function() {
 
   Lab.it('executes callback with error if password is missing', function(done) {
     var authenticateGithub = new AuthenticateGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      timestamp: function() {
+        return 0;
+      }
     });
 
     authenticateGithub.authenticate({
@@ -158,7 +179,10 @@ Lab.experiment('authenticate', function() {
 
   Lab.it('executes callback with error credentials are missing', function(done) {
     var authenticateGithub = new AuthenticateGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      timestamp: function() {
+        return 0;
+      }
     });
 
     authenticateGithub.authenticate(null, function(err) {

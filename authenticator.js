@@ -4,7 +4,7 @@ var parseUrl = require('url'),
   createGithubApi = require('./create-github-api.js'),
   config = require('@npm/enterprise-configurator').Config();
 
-function AuthorizeGithub(opts) {
+function AuthenticateGithub(opts) {
   _.extend(this, {
     packagePath: null, // required, name-spaced package name.
     debug: true,
@@ -19,7 +19,7 @@ function AuthorizeGithub(opts) {
 // Reach out to GitHub API to authenticate the user. Create an authorization
 // token and pass it back as it is, allowing the authorizer to verify it through
 // GitHub API later on.
-AuthorizeGithub.prototype.authenticate = function(credentials, cb) {
+AuthenticateGithub.prototype.authenticate = function(credentials, cb) {
   if (!this._validateCredentials(credentials)) return cb(Error('invalid credentials format'));
 
   var body = credentials.body,
@@ -51,7 +51,7 @@ AuthorizeGithub.prototype.authenticate = function(credentials, cb) {
     .done();
 };
 
-AuthorizeGithub.prototype._validateCredentials = function(credentials) {
+AuthenticateGithub.prototype._validateCredentials = function(credentials) {
   if (!credentials) return false;
   if (!credentials.body) return false;
   if (!credentials.body.name || !credentials.body.password) return false;
@@ -59,7 +59,7 @@ AuthorizeGithub.prototype._validateCredentials = function(credentials) {
 };
 
 // Actually create the authorization token.
-AuthorizeGithub.prototype.getAuthorizationToken = function(username, password, twoFactorCode) {
+AuthenticateGithub.prototype.getAuthorizationToken = function(username, password, twoFactorCode) {
   var _this = this,
     github = createGithubApi(this);
 
@@ -73,7 +73,7 @@ AuthorizeGithub.prototype.getAuthorizationToken = function(username, password, t
     github.authorization.create({
       scopes: ["user", "public_repo", "repo", "repo:status", "gist"],
       // timestamp helps prevent duplicate tokens.
-      note: _this.note + ' (' + new Date().getTime() + ')',
+      note: _this.note + ' (' + _this.timestamp() + ')',
       note_url: _this.noteUrl,
       headers: {
         "X-GitHub-OTP": twoFactorCode
@@ -85,4 +85,8 @@ AuthorizeGithub.prototype.getAuthorizationToken = function(username, password, t
   });
 };
 
-module.exports = AuthorizeGithub;
+AuthenticateGithub.prototype.timestamp = function() {
+  return new Date().getTime();
+};
+
+module.exports = AuthenticateGithub;
