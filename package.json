@@ -1,13 +1,13 @@
 {
   "name": "@npm/npme-auth-github",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "description": "GitHub authentication and authorization strategy for npm Enterprise",
   "repository": {
     "type": "git",
     "url": "https://github.com/npm/npme-auth-github.git"
   },
   "scripts": {
-    "test": "lab -v -c --timeout 4000 test/"
+    "test": "lab -v -c --timeout 1000 test/"
   },
   "dependencies": {
     "@npm/enterprise-configurator": "~0.1.8",
