@@ -47,7 +47,7 @@ AuthorizeGithub.prototype.authorize = function(credentials, cb) {
 
   if (credentials.method == 'GET') {
     this.scope = 'read';
-  } else if (credentials.method == 'PUT') {
+  } else if (credentials.method == 'PUT' || credentials.method === 'DELETE') {
     this.scope = 'publish';
   } else {
     return cb(Error('unsupported method'), null);
