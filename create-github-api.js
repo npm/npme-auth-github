@@ -11,7 +11,7 @@ module.exports = function(githubParams) {
     githubOpts = {
       version: "3.0.0",
       debug: githubParams.debug,
-      timeout: 5000,
+      timeout: 30000,
       tokenName: 'npm Enterprise solution'
     };
 
