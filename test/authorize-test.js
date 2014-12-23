@@ -68,6 +68,19 @@ Lab.experiment('parseGitUrl', function() {
     });
   });
 
+  Lab.test('it supports the git@ format url', function(done) {
+    var ga = new AuthorizeGithub({
+      githubHost: 'github.npmjs.com'
+    });
+
+    ga.parseGitUrl({
+      repository: {url: 'git@github.com:npm/foobar.git'}
+    }).done(function(params) {
+      Lab.expect(params.org).to.equal('npm');
+      Lab.expect(params.repo).to.equal('foobar');
+      done();
+    });
+  });
 });
 
 Lab.experiment('loadPackageJSON', function() {

@@ -150,7 +150,7 @@ AuthorizeGithub.prototype.parseGitUrl = function(packageJSON) {
     try {
       var url = packageJSON.repository.url;
 
-      if (url.match(/^git:\/\//)) url = parseGitUrl(url, {extraBaseUrls: /[^/]+/.source});
+      if (url.match(/^(git:\/\/|git@)/)) url = parseGitUrl(url, {extraBaseUrls: /[^/]+/.source});
 
       var parsedUrl = parseUrl.parse(url),
         splitOrgRepo = parsedUrl.path.split('.git')[0].match(/^\/(.*)\/(.*)$/);
