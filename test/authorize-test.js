@@ -74,7 +74,7 @@ Lab.experiment('parseGitUrl', function() {
     });
 
     ga.parseGitUrl({
-      repository: {url: 'git@github.com:npm/foobar.git'}
+      repository: {url: 'git@github.npmjs.com:npm/foobar.git'}
     }).done(function(params) {
       Lab.expect(params.org).to.equal('npm');
       Lab.expect(params.repo).to.equal('foobar');
