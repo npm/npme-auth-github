@@ -4,7 +4,8 @@ var parseUrl = require('url'),
   _ = require('lodash'),
   request = require('request'),
   createGithubApi = require('./create-github-api.js'),
-  config = require('@npm/enterprise-configurator').Config();
+  config = require('@npm/enterprise-configurator').Config(),
+  Session = require('./session');
 
 function AuthorizeGithub(opts) {
   _.extend(this, {
@@ -164,6 +165,15 @@ AuthorizeGithub.prototype.parseGitUrl = function(packageJSON) {
       reject(e);
     }
   });
+};
+
+AuthorizeGithub.prototype.whoami = function(credentials, cb) {
+  var session = new Session({
+      githubHost: this.githubHost
+    }),
+    token = credentials.headers.authorization.replace('Bearer ', '');
+
+  session.get(token, cb);
 };
 
 module.exports = AuthorizeGithub;
