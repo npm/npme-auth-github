@@ -51,7 +51,7 @@ SessionGithub.prototype._githubLookup = function(key, cb) {
     else {
       var session = {
         name: res.login,
-        email: res.email
+        email: res.email || 'npme@example.com'
       };
 
       // If authentication with GitHub succeeded, persist the GitHub login and

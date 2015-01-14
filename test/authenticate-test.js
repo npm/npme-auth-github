@@ -131,6 +131,8 @@ Lab.experiment('authenticate', function() {
     }, function(err, res) {
       Lab.expect(res.token).to.eql('cc84252fd8061b232beb5e345f33b13d120c236c');
       Lab.expect(res.user.name).to.eql('bcoe-test');
+      // email should have a sane default, if we fail to look it up.
+      Lab.expect(res.user.email).to.eql('npme@example.com');
       done();
     });
   });
