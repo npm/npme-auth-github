@@ -171,8 +171,8 @@ AuthorizeGithub.prototype.whoami = function(credentials, cb) {
   var session = new Session({
       githubHost: this.githubHost
     }),
-    token = credentials.headers.authorization.replace('Bearer ', '');
-
+    token = 'user-' + credentials.headers.authorization.replace('Bearer ', '');
+  
   session.get(token, cb);
 };
 

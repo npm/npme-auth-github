@@ -403,10 +403,10 @@ Lab.experiment('authorize', function() {
 
 Lab.experiment('whoami', function() {
   var client = redis.createClient(),
-    token = 'user-footoken';
+    token = 'footoken';
 
   Lab.before(function(done) {
-    client.del(token, function() {
+    client.del('user-' + token, function() {
       done();
     });
   });
