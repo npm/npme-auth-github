@@ -4,7 +4,8 @@ var Lab = require('lab'),
   Promise = require('bluebird'),
   fs = require('fs'),
   config = require('@npm/enterprise-configurator').Config(),
-  assert = require('assert');
+  assert = require('assert'),
+  redis = require('redis');
 
 Lab.experiment('parseGitUrl', function() {
 
@@ -107,7 +108,7 @@ Lab.experiment('loadPackageJSON', function() {
 
   Lab.test('gracefully handles request returning an error', function(done) {
     nock.cleanAll();
-    
+
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
       packagePath: '/@npm/foobar'
@@ -398,5 +399,57 @@ Lab.experiment('authorize', function() {
       done();
     });
   });
+});
 
+Lab.experiment('whoami', function() {
+  var client = redis.createClient(),
+    token = 'footoken';
+
+  Lab.before(function(done) {
+    client.del('user-' + token, function() {
+      done();
+    });
+  });
+
+  Lab.it('looks up user using GitHub API if not found in redis', function(done) {
+    var ga = new AuthorizeGithub({
+      frontDoorHost: 'http://frontdoor.npmjs.com',
+      githubHost: 'https://github.example.com'
+    });
+
+    var githubApi = nock('https://github.example.com')
+      .get('/api/v3/user?access_token=footoken')
+      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'));
+
+    ga.whoami({
+      method: 'GET',
+      headers: {
+        'authorization': 'Bearer ' + token
+      },
+      path: '/@npm-test/foo'
+    }, function(err, data) {
+      Lab.expect(data.name).to.eql('bcoe');
+      Lab.expect(data.email).to.eql('ben@npmjs.com');
+      githubApi.done();
+      done();
+    });
+  });
+
+  Lab.it('returns user from redis if cached', function(done) {
+    var ga = new AuthorizeGithub({
+      frontDoorHost: 'http://frontdoor.npmjs.com'
+    });
+
+    ga.whoami({
+      method: 'GET',
+      headers: {
+        'authorization': 'Bearer ' + token
+      },
+      path: '/@npm-test/foo'
+    }, function(err, data) {
+      Lab.expect(data.name).to.eql('bcoe');
+      Lab.expect(data.email).to.eql('ben@npmjs.com');
+      done();
+    });
+  });
 });

@@ -33,7 +33,7 @@ AuthenticateGithub.prototype.authenticate = function(credentials, cb) {
         token: token,
         user: {
           name: username,
-          email: body.email
+          email: body.email || 'npme@example.com'
         }
       });
     })
