@@ -1,4 +1,6 @@
-var Lab = require('lab'),
+var lab = require('lab'),
+  Lab = exports.lab = lab.script(),
+  Code = require('code'),
   nock = require('nock'),
   AuthorizeGithub = require('../authorizer.js'),
   Promise = require('bluebird'),
@@ -15,8 +17,8 @@ Lab.experiment('parseGitUrl', function() {
     ga.parseGitUrl({
       repository: { url: 'http://github.npm.com/npm/thumbd.git' }
     }).done(function(params) {
-      Lab.expect(params.org).to.equal('npm');
-      Lab.expect(params.repo).to.equal('thumbd');
+      Code.expect(params.org).to.equal('npm');
+      Code.expect(params.repo).to.equal('thumbd');
       done();
     });
   });
@@ -27,7 +29,7 @@ Lab.experiment('parseGitUrl', function() {
     ga.parseGitUrl({
       repository: { url: 'github.com/npm' }
     }).catch(function(err) {
-      Lab.expect(err.message).to.match(/does not appear/);
+      Code.expect(err.message).to.match(/does not appear/);
       done();
     }).done();
   });
@@ -36,7 +38,7 @@ Lab.experiment('parseGitUrl', function() {
     var ga = new AuthorizeGithub();
 
     ga.parseGitUrl().catch(function(err) {
-      Lab.expect(err.message).to.match(/Cannot read property/);
+      Code.expect(err.message).to.match(/Cannot read property/);
       done();
     }).done();
   });
@@ -49,8 +51,8 @@ Lab.experiment('parseGitUrl', function() {
     ga.parseGitUrl({
       repository: {url: 'git://github.npmjs.com/npm/foobar'}
     }).done(function(params) {
-      Lab.expect(params.org).to.equal('npm');
-      Lab.expect(params.repo).to.equal('foobar');
+      Code.expect(params.org).to.equal('npm');
+      Code.expect(params.repo).to.equal('foobar');
       done();
     });
   });
@@ -63,8 +65,8 @@ Lab.experiment('parseGitUrl', function() {
     ga.parseGitUrl({
       repository: {url: 'git://github.npmjs.com/npm/foobar'}
     }).done(function(params) {
-      Lab.expect(params.org).to.equal('npm');
-      Lab.expect(params.repo).to.equal('foobar');
+      Code.expect(params.org).to.equal('npm');
+      Code.expect(params.repo).to.equal('foobar');
       done();
     });
   });
@@ -77,8 +79,8 @@ Lab.experiment('parseGitUrl', function() {
     ga.parseGitUrl({
       repository: {url: 'git@github.npmjs.com:npm/foobar.git'}
     }).done(function(params) {
-      Lab.expect(params.org).to.equal('npm');
-      Lab.expect(params.repo).to.equal('foobar');
+      Code.expect(params.org).to.equal('npm');
+      Code.expect(params.repo).to.equal('foobar');
       done();
     });
   });
@@ -99,7 +101,7 @@ Lab.experiment('loadPackageJSON', function() {
       }));
 
     ga.loadPackageJSON().done(function(package) {
-      Lab.expect(package.repository.url).to
+      Code.expect(package.repository.url).to
         .equal('http://github.npm.com/npm/thumbd.git');
       packageApi.done();
       done();
@@ -115,7 +117,7 @@ Lab.experiment('loadPackageJSON', function() {
     });
 
     ga.loadPackageJSON().catch(function(err) {
-      Lab.expect(err.message).to.match(/getaddrinfo ENOTFOUND/);
+      Code.expect(err.message).to.match(/getaddrinfo ENOTFOUND/);
       done();
     }).done();
   });
@@ -384,7 +386,7 @@ Lab.experiment('authorize', function() {
       },
       path: '/@npm-test/foo'
     }, function(err, authorized) {
-      Lab.expect(authorized).to.equal(false);
+      Code.expect(authorized).to.equal(false);
       done();
     });
   });
@@ -395,7 +397,7 @@ Lab.experiment('authorize', function() {
     });
 
     ga.authorize(null, function(err, authorized) {
-      Lab.expect(authorized).to.equal(false);
+      Code.expect(authorized).to.equal(false);
       done();
     });
   });
@@ -428,8 +430,8 @@ Lab.experiment('whoami', function() {
       },
       path: '/@npm-test/foo'
     }, function(err, data) {
-      Lab.expect(data.name).to.eql('bcoe');
-      Lab.expect(data.email).to.eql('ben@npmjs.com');
+      Code.expect(data.name).to.deep.equal('bcoe');
+      Code.expect(data.email).to.deep.equal('ben@npmjs.com');
       githubApi.done();
       done();
     });
@@ -447,8 +449,8 @@ Lab.experiment('whoami', function() {
       },
       path: '/@npm-test/foo'
     }, function(err, data) {
-      Lab.expect(data.name).to.eql('bcoe');
-      Lab.expect(data.email).to.eql('ben@npmjs.com');
+      Code.expect(data.name).to.deep.equal('bcoe');
+      Code.expect(data.email).to.deep.equal('ben@npmjs.com');
       done();
     });
   });

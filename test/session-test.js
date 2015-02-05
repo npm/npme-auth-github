@@ -1,4 +1,6 @@
-var Lab = require('lab'),
+var lab = require('lab'),
+  Lab = exports.lab = lab.script(),
+  Code = require('code'),
   nock = require('nock'),
   fs = require('fs'),
   SessionGithub = require('../session.js'),
@@ -28,8 +30,8 @@ Lab.experiment('get', function() {
       .reply(200, fs.readFileSync('./test/fixtures/user-get.json'));
 
     session.get(token, function(err, data) {
-      Lab.expect(data.name).to.eql('bcoe');
-      Lab.expect(data.email).to.eql('ben@npmjs.com');
+      Code.expect(data.name).to.deep.equal('bcoe');
+      Code.expect(data.email).to.deep.equal('ben@npmjs.com');
       githubApi.done();
       done();
     });
@@ -48,8 +50,8 @@ Lab.experiment('get', function() {
       githubApi.done();
       client.get(token, function(err, sessionJson) {
         var session = JSON.parse(sessionJson);
-        Lab.expect(session.name).to.eql('bcoe');
-        Lab.expect(session.email).to.eql('ben@npmjs.com');
+        Code.expect(session.name).to.deep.equal('bcoe');
+        Code.expect(session.email).to.deep.equal('ben@npmjs.com');
         done();
       });
     });
@@ -66,7 +68,7 @@ Lab.experiment('get', function() {
 
     session.get(token, function(err, data) {
       githubApi.done();
-      Lab.expect(err.code).to.eql(500);
+      Code.expect(err.code).to.deep.equal(500);
       done();
     });
   });
