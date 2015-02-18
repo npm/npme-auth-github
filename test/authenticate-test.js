@@ -97,6 +97,7 @@ Lab.experiment('getAuthorizationToken', function() {
 
     authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').catch(function(err) {
       Code.expect(err.code).to.deep.equal(500);
+      packageApi.done();
       done();
     }).done();
   });
