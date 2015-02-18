@@ -29,26 +29,25 @@ AuthenticateGithub.prototype.authenticate = function(credentials, cb) {
 
   this.getAuthorizationToken(username, password, twoFactorCode)
     .then(function(token) {
-      cb(undefined, {
+      return {
         token: token,
         user: {
           name: username,
           email: body.email || 'npme@example.com'
         }
-      });
-    })
-    .catch(function(err) {
+      };
+    }, function(err) {
       if (err.code === 401) {
         err.message = 'unauthorized';
         // this is a failure to auth, but not an error
-        cb(null,err);
+        return err;
       } else if (err.code === 500) {
         err.message = 'GitHub enterprise unavailable';
-        // this is an error state
-        cb(err)
       }
+      // this is an error state
+      throw err;
     })
-    .done();
+    .nodeify(cb);
 };
 
 AuthenticateGithub.prototype._validateCredentials = function(credentials) {
