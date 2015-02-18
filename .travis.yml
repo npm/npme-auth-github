@@ -7,4 +7,6 @@ node_js:
 services:
   - redis-server
 before_install:
+  - if [[ `node --version` =~ "v0.10" ]]; then npm install -g npm@latest; fi
+  - npm config set spin false
   - printf "@npm:registry=https://enterprise.npmjs.com\n" >> ~/.npmrc
