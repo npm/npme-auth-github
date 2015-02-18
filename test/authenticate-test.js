@@ -1,4 +1,6 @@
-var Lab = require('lab'),
+var lab = require('lab'),
+  Lab = exports.lab = lab.script(),
+  Code = require('code'),
   AuthenticateGithub = require('../authenticator.js'),
   nock = require('nock'),
   fs = require('fs');
@@ -27,7 +29,7 @@ Lab.experiment('getAuthorizationToken', function() {
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
 
     authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').done(function(token) {
-      Lab.expect(token).to.eql('cc84252fd8061b232beb5e345f33b13d120c236c');
+      Code.expect(token).to.deep.equal('cc84252fd8061b232beb5e345f33b13d120c236c');
       packageApi.done();
       done();
     });
@@ -56,7 +58,7 @@ Lab.experiment('getAuthorizationToken', function() {
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
 
     authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').done(function(token) {
-      Lab.expect(token).to.eql('cc84252fd8061b232beb5e345f33b13d120c236c');
+      Code.expect(token).to.deep.equal('cc84252fd8061b232beb5e345f33b13d120c236c');
       packageApi.done();
       done();
     });
@@ -75,7 +77,7 @@ Lab.experiment('getAuthorizationToken', function() {
       .reply(401);
 
     authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').catch(function(err) {
-      Lab.expect(err.code).to.eql(401);
+      Code.expect(err.code).to.deep.equal(401);
       packageApi.done();
       done();
     }).done();
@@ -94,7 +96,7 @@ Lab.experiment('getAuthorizationToken', function() {
       .reply(500);
 
     authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').catch(function(err) {
-      Lab.expect(err.code).to.eql(500);
+      Code.expect(err.code).to.deep.equal(500);
       done();
     }).done();
   });
@@ -129,10 +131,10 @@ Lab.experiment('authenticate', function() {
         password: 'foobar'
       }
     }, function(err, res) {
-      Lab.expect(res.token).to.eql('cc84252fd8061b232beb5e345f33b13d120c236c');
-      Lab.expect(res.user.name).to.eql('bcoe-test');
+      Code.expect(res.token).to.deep.equal('cc84252fd8061b232beb5e345f33b13d120c236c');
+      Code.expect(res.user.name).to.deep.equal('bcoe-test');
       // email should have a sane default, if we fail to look it up.
-      Lab.expect(res.user.email).to.eql('npme@example.com');
+      Code.expect(res.user.email).to.deep.equal('npme@example.com');
       done();
     });
   });
@@ -155,7 +157,7 @@ Lab.experiment('authenticate', function() {
         password: 'foobar'
       }
     }, function(err, resp) {
-      Lab.expect(resp.message).to.eql('unauthorized');
+      Code.expect(resp.message).to.deep.equal('unauthorized');
       packageApi.done();
       done();
     });
@@ -174,7 +176,7 @@ Lab.experiment('authenticate', function() {
         name: 'bcoe-test',
       }
     }, function(err) {
-      Lab.expect(err.message).to.eql('invalid credentials format');
+      Code.expect(err.message).to.deep.equal('invalid credentials format');
       done();
     });
   });
@@ -188,7 +190,7 @@ Lab.experiment('authenticate', function() {
     });
 
     authenticateGithub.authenticate(null, function(err) {
-      Lab.expect(err.message).to.eql('invalid credentials format');
+      Code.expect(err.message).to.deep.equal('invalid credentials format');
       done();
     });
   });
