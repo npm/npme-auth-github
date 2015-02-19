@@ -11,7 +11,7 @@ function AuthenticateGithub(opts) {
     debug: true,
     githubHost: config.githubHost,
     githubPathPrefix: '/api/v3',
-    githubOrg: null,
+    githubOrg: config.githubOrg,
     // label the token that we generate.
     note: 'npm on premises solution',
     noteUrl: 'https://www.npmjs.org'
