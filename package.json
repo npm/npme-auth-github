@@ -7,7 +7,7 @@
     "url": "https://github.com/npm/npme-auth-github.git"
   },
   "scripts": {
-    "test": "lab -v -c --timeout 1000 test/"
+    "test": "lab -v -c --timeout 1000 test/ --ignore '$$bole'"
   },
   "dependencies": {
     "@npm/enterprise-configurator": "~0.1.8",

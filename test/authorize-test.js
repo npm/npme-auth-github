@@ -1,18 +1,22 @@
-var lab = require('lab'),
+var config = require('@npm/enterprise-configurator').Config({
+    headless: true
+  }),
+  lab = require('lab'),
   Lab = exports.lab = lab.script(),
   Code = require('code'),
   nock = require('nock'),
   AuthorizeGithub = require('../authorizer.js'),
   Promise = require('bluebird'),
   fs = require('fs'),
-  config = require('@npm/enterprise-configurator').Config(),
   assert = require('assert'),
   redis = require('redis');
 
 Lab.experiment('parseGitUrl', function() {
 
   Lab.test('it parses url and returns components for github api', function(done) {
-    var ga = new AuthorizeGithub();
+    var ga = new AuthorizeGithub({
+      debug: false
+    });
 
     ga.parseGitUrl({
       repository: { url: 'http://github.npm.com/npm/thumbd.git' }
@@ -24,7 +28,9 @@ Lab.experiment('parseGitUrl', function() {
   });
 
   Lab.test('it gracefully handles an invalid url', function(done) {
-    var ga = new AuthorizeGithub();
+    var ga = new AuthorizeGithub({
+      debug: false
+    });
 
     ga.parseGitUrl({
       repository: { url: 'github.com/npm' }
@@ -35,7 +41,9 @@ Lab.experiment('parseGitUrl', function() {
   });
 
   Lab.test('it gracefully handles a missing url', function(done) {
-    var ga = new AuthorizeGithub();
+    var ga = new AuthorizeGithub({
+      debug: false
+    });
 
     ga.parseGitUrl().catch(function(err) {
       Code.expect(err.message).to.match(/Cannot read property/);
@@ -45,7 +53,8 @@ Lab.experiment('parseGitUrl', function() {
 
   Lab.test('it supports git:// format url', function(done) {
     var ga = new AuthorizeGithub({
-      githubHost: 'github.npmjs.com'
+      githubHost: 'github.npmjs.com',
+      debug: false
     });
 
     ga.parseGitUrl({
@@ -59,7 +68,8 @@ Lab.experiment('parseGitUrl', function() {
 
   Lab.test('it defaults to https if git:// format url is provided', function(done) {
     var ga = new AuthorizeGithub({
-      githubHost: 'github.npmjs.com'
+      githubHost: 'github.npmjs.com',
+      debug: false
     });
 
     ga.parseGitUrl({
@@ -73,7 +83,8 @@ Lab.experiment('parseGitUrl', function() {
 
   Lab.test('it supports the git@ format url', function(done) {
     var ga = new AuthorizeGithub({
-      githubHost: 'github.npmjs.com'
+      githubHost: 'github.npmjs.com',
+      debug: false
     });
 
     ga.parseGitUrl({
@@ -91,7 +102,8 @@ Lab.experiment('loadPackageJSON', function() {
   Lab.test('returns parsed package.json', function(done) {
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
-      packagePath: '/@npm/foobar'
+      packagePath: '/@npm/foobar',
+      debug: false
     });
 
     var packageApi = nock('http://frontdoor.npmjs.com')
@@ -113,7 +125,8 @@ Lab.experiment('loadPackageJSON', function() {
 
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
-      packagePath: '/@npm/foobar'
+      packagePath: '/@npm/foobar',
+      debug: false
     });
 
     ga.loadPackageJSON().catch(function(err) {
@@ -141,7 +154,8 @@ Lab.experiment('loadPackageJSON', function() {
       githubHost: 'https://github.example.com:4444',
       packagePath: '/@npm-test/foo',
       token: 'banana',
-      scope: 'read'
+      scope: 'read',
+      debug: false
     });
 
     ga.isAuthorized().done(function(authorized) {
@@ -175,7 +189,8 @@ Lab.experiment('isAuthorized', function() {
       frontDoorHost: 'http://frontdoor.npmjs.com',
       packagePath: '/@npm-test/foo',
       token: 'banana',
-      scope: 'read'
+      scope: 'read',
+      debug: false
     });
 
     ga.isAuthorized().done(function(authorized) {
@@ -205,7 +220,8 @@ Lab.experiment('isAuthorized', function() {
       frontDoorHost: 'http://frontdoor.npmjs.com',
       packagePath: '/@npm-test/foo',
       token: 'banana',
-      scope: 'read'
+      scope: 'read',
+      debug: false
     });
 
     ga.isAuthorized().done(function(authorized) {
@@ -240,7 +256,8 @@ Lab.experiment('isAuthorized', function() {
             repository: { url: 'http://github.npmjs.com/npm-test/foo.git' }
           }
         }
-      }
+      },
+      debug: false
     });
 
     ga.isAuthorized().done(function(authorized) {
@@ -270,7 +287,8 @@ Lab.experiment('isAuthorized', function() {
       frontDoorHost: 'http://frontdoor.npmjs.com',
       packagePath: '/@npm-test/foo',
       token: 'banana',
-      scope: 'push'
+      scope: 'push',
+      debug: false
     });
 
     ga.isAuthorized().done(function(authorized) {
@@ -301,7 +319,8 @@ Lab.experiment('isAuthorized', function() {
       frontDoorHost: 'http://frontdoor.npmjs.com',
       packagePath: '/@npm-test/foo',
       token: 'banana',
-      scope: 'publish'
+      scope: 'publish',
+      debug: false
     });
 
     ga.isAuthorized().done(function(authorized) {
@@ -323,7 +342,8 @@ Lab.experiment('authorize', function() {
         return new Promise(function(resolve, reject) {
           resolve(true)
         })
-      }
+      },
+      debug: false
     });
 
     ga.authorize({
@@ -355,7 +375,8 @@ Lab.experiment('authorize', function() {
       .reply(200, fs.readFileSync('./test/fixtures/read-write.json'))
 
     var ga = new AuthorizeGithub({
-      frontDoorHost: 'http://frontdoor.npmjs.com'
+      frontDoorHost: 'http://frontdoor.npmjs.com',
+      debug: false
     });
 
     ga.authorize({
@@ -376,7 +397,8 @@ Lab.experiment('authorize', function() {
   Lab.test("it should return an error if bearer token can't be parsed", function(done) {
 
     var ga = new AuthorizeGithub({
-      frontDoorHost: 'http://frontdoor.npmjs.com'
+      frontDoorHost: 'http://frontdoor.npmjs.com',
+      debug: false
     });
 
     ga.authorize({
@@ -393,7 +415,8 @@ Lab.experiment('authorize', function() {
 
   Lab.test("it should return an error if no credentials are provided", function(done) {
     var ga = new AuthorizeGithub({
-      frontDoorHost: 'http://frontdoor.npmjs.com'
+      frontDoorHost: 'http://frontdoor.npmjs.com',
+      debug: false
     });
 
     ga.authorize(null, function(err, authorized) {
@@ -416,7 +439,8 @@ Lab.experiment('whoami', function() {
   Lab.it('looks up user using GitHub API if not found in redis', function(done) {
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      debug: false
     });
 
     var githubApi = nock('https://github.example.com')
@@ -439,7 +463,8 @@ Lab.experiment('whoami', function() {
 
   Lab.it('returns user from redis if cached', function(done) {
     var ga = new AuthorizeGithub({
-      frontDoorHost: 'http://frontdoor.npmjs.com'
+      frontDoorHost: 'http://frontdoor.npmjs.com',
+      debug: false
     });
 
     ga.whoami({
