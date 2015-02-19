@@ -1,4 +1,5 @@
 var parseUrl = require('url'),
+  logger = require('@npm/enterprise-configurator').logger(),
   Promise = require('bluebird'),
   _ = require('lodash'),
   createGithubApi = require('./create-github-api.js'),

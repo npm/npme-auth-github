@@ -22,7 +22,8 @@ Lab.experiment('get', function() {
 
   Lab.test('if user is not found in DB, user is looked up via GitHub API', function(done) {
     var session = new SessionGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      debug: false
     });
 
     var githubApi = nock('https://github.example.com')
@@ -39,7 +40,8 @@ Lab.experiment('get', function() {
 
   Lab.test('it creates session in Redis if user found in GitHub API', function(done) {
     var session = new SessionGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      debug: false
     });
 
     var githubApi = nock('https://github.example.com')
@@ -59,7 +61,8 @@ Lab.experiment('get', function() {
 
   Lab.test('it returns an error if GitHub API returns non 200', function(done) {
     var session = new SessionGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      debug: false
     });
 
     var githubApi = nock('https://github.example.com')

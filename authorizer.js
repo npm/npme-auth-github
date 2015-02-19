@@ -1,4 +1,5 @@
-var parseUrl = require('url'),
+var logger = require('@npm/enterprise-configurator').logger(),
+  parseUrl = require('url'),
   parseGitUrl = require('github-url-from-git'),
   Promise = require('bluebird'),
   _ = require('lodash'),
@@ -25,7 +26,7 @@ function AuthorizeGithub(opts) {
 // authorization.
 AuthorizeGithub.prototype.authorize = function(credentials, cb) {
   if (!credentials) return cb(null, false);
-  console.log('authorize with credentials', credentials);
+  logger.log('authorize with credentials', credentials);
 
   // path to package.json in front-door.
   this.packagePath = credentials.path;
@@ -42,7 +43,7 @@ AuthorizeGithub.prototype.authorize = function(credentials, cb) {
   try {
     this.token = credentials.headers.authorization.replace('Bearer ', '');
   } catch (err) {
-    console.log('error parsing bearer token', err);
+    logger.log('error parsing bearer token', err);
     return cb(null, false);
   }
 
@@ -54,15 +55,15 @@ AuthorizeGithub.prototype.authorize = function(credentials, cb) {
     return cb(Error('unsupported method'), null);
   }
 
-  console.log('attempting to authorize', this.scope)
+  logger.log('attempting to authorize', this.scope)
 
   this.isAuthorized()
     .then(function(authorized) {
-      console.log('authorization response', authorized);
+      logger.log('authorization response', authorized);
       cb(null, authorized);
     })
     .catch(function(err) {
-      console.log('authorization error', err);
+      logger.log('authorization error', err);
       cb(err);
     });
 };
@@ -169,10 +170,11 @@ AuthorizeGithub.prototype.parseGitUrl = function(packageJSON) {
 
 AuthorizeGithub.prototype.whoami = function(credentials, cb) {
   var session = new Session({
-      githubHost: this.githubHost
+      githubHost: this.githubHost,
+      debug: this.debug
     }),
     token = 'user-' + credentials.headers.authorization.replace('Bearer ', '');
-  
+
   session.get(token, cb);
 };
 

@@ -1,4 +1,8 @@
-var lab = require('lab'),
+
+var config = require('@npm/enterprise-configurator').Config({
+    headless: true
+  }),
+  lab = require('lab'),
   Lab = exports.lab = lab.script(),
   Code = require('code'),
   AuthenticateGithub = require('../authenticator.js'),
@@ -11,7 +15,8 @@ Lab.experiment('getAuthorizationToken', function() {
       githubHost: 'https://github.example.com',
       timestamp: function() {
         return 0;
-      }
+      },
+      debug: false
     });
 
     var packageApi = nock('https://github.example.com', {
@@ -40,7 +45,8 @@ Lab.experiment('getAuthorizationToken', function() {
       githubHost: 'https://github.example.com:4444',
       timestamp: function() {
         return 0;
-      }
+      },
+      debug: false
     });
 
     var packageApi = nock('https://github.example.com:4444', {
@@ -69,7 +75,8 @@ Lab.experiment('getAuthorizationToken', function() {
       githubHost: 'https://github.example.com',
       timestamp: function() {
         return 0;
-      }
+      },
+      debug: false
     });
 
     var packageApi = nock('https://github.example.com')
@@ -88,7 +95,8 @@ Lab.experiment('getAuthorizationToken', function() {
       githubHost: 'https://github.example.com',
       timestamp: function() {
         return 0;
-      }
+      },
+      debug: false
     });
 
     var packageApi = nock('https://github.example.com')
@@ -109,7 +117,8 @@ Lab.experiment('authenticate', function() {
       githubHost: 'https://github.example.com',
       timestamp: function() {
         return 0;
-      }
+      },
+      debug: false
     });
 
     var packageApi = nock('https://github.example.com', {
@@ -145,7 +154,8 @@ Lab.experiment('authenticate', function() {
       githubHost: 'https://github.example.com',
       timestamp: function() {
         return 0;
-      }
+      },
+      debug: false
     });
 
     var packageApi = nock('https://github.example.com')
@@ -169,7 +179,8 @@ Lab.experiment('authenticate', function() {
       githubHost: 'https://github.example.com',
       timestamp: function() {
         return 0;
-      }
+      },
+      debug: false
     });
 
     authenticateGithub.authenticate({
@@ -187,7 +198,8 @@ Lab.experiment('authenticate', function() {
       githubHost: 'https://github.example.com',
       timestamp: function() {
         return 0;
-      }
+      },
+      debug: false
     });
 
     authenticateGithub.authenticate(null, function(err) {
@@ -201,7 +213,8 @@ Lab.experiment('authenticate', function() {
       githubHost: 'https://github.example.com',
       timestamp: function() {
         return 0;
-      }
+      },
+      debug: false
     });
 
     var packageApi = nock('https://github.example.com')
