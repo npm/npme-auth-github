@@ -11,6 +11,7 @@ function AuthenticateGithub(opts) {
     debug: true,
     githubHost: config.githubHost,
     githubPathPrefix: '/api/v3',
+    githubOrg: config.githubOrg,
     // label the token that we generate.
     note: 'npm on premises solution',
     noteUrl: 'https://www.npmjs.org'
@@ -81,6 +82,22 @@ AuthenticateGithub.prototype.getAuthorizationToken = function(username, password
     }, function(err, res) {
       if (err) reject(err);
       else resolve(res.token);
+    });
+  }).then(this.githubOrg && function(token) {
+    return new Promise(function(resolve, reject) {
+      github.orgs.getMember({ user: username, org: _this.githubOrg }, function(err, res) {
+        if (err) reject(err);
+        else resolve(token);
+      });
+    }).catch(function(err) {
+      if (err.code === 404) {
+        err.code = 401;
+        err.message = 'unauthorized';
+      } else if (err.code === 500) {
+        err.message = 'GitHub enterprise unavailable';
+      }
+      // this is an error state
+      throw err;
     });
   });
 };
