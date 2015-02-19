@@ -171,7 +171,7 @@ Lab.experiment('getAuthorizationToken', function() {
       .reply(404);
 
     authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').nodeify(function(err, token) {
-      Code.expect(err.code).to.equal(404);
+      Code.expect(err.code).to.equal(401);
       Code.expect(!!token).to.equal(false);
       packageApi.done();
       done();

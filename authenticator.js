@@ -89,6 +89,15 @@ AuthenticateGithub.prototype.getAuthorizationToken = function(username, password
         if (err) reject(err);
         else resolve(token);
       });
+    }).catch(function(err) {
+      if (err.code === 404) {
+        err.code = 401;
+        err.message = 'unauthorized';
+      } else if (err.code === 500) {
+        err.message = 'GitHub enterprise unavailable';
+      }
+      // this is an error state
+      throw err;
     });
   });
 };
