@@ -97,6 +97,7 @@ Lab.experiment('getAuthorizationToken', function() {
 
     authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').catch(function(err) {
       Code.expect(err.code).to.deep.equal(500);
+      packageApi.done();
       done();
     }).done();
   });
@@ -195,4 +196,27 @@ Lab.experiment('authenticate', function() {
     });
   });
 
+  Lab.it('executes callback with error if GHE API fails with unexpected status code', function(done) {
+    var authenticateGithub = new AuthenticateGithub({
+      githubHost: 'https://github.example.com',
+      timestamp: function() {
+        return 0;
+      }
+    });
+
+    var packageApi = nock('https://github.example.com')
+      .post('/api/v3/authorizations')
+      .reply(432);
+
+    authenticateGithub.authenticate({
+      body: {
+        name: 'bcoe-test',
+        password: 'foobar'
+      }
+    }, function(err, resp) {
+      Code.expect(err.code).to.deep.equal(432);
+      packageApi.done();
+      done();
+    });
+  });
 });
