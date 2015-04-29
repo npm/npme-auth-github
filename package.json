@@ -12,7 +12,7 @@
   "dependencies": {
     "@npm/enterprise-configurator": "~0.1.8",
     "bluebird": "^2.3.6",
-    "github": "^0.2.2",
+    "github": "0.2.2",
     "github-url-from-git": "^1.4.0",
     "lodash": "^2.4.1",
     "redis": "^0.12.1",
