@@ -8,7 +8,7 @@ var parseUrl = require('url'),
 function AuthenticateGithub(opts) {
   _.extend(this, {
     packagePath: null, // required, name-spaced package name.
-    debug: true,
+    debug: false,
     githubHost: config.githubHost,
     githubPathPrefix: '/api/v3',
     githubOrg: config.githubOrg,
