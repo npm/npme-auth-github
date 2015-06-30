@@ -13,7 +13,7 @@ function AuthorizeGithub(opts) {
     packagePath: null, // required, name-spaced package name.
     token: null, // GitHub API Key.
     scope: null, // read, publish.
-    debug: true,
+    debug: false,
     frontDoorHost: config.frontDoorHost,
     githubHost: config.githubHost,
     untrustedPackageJson: null,
