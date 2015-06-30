@@ -62,7 +62,8 @@ AuthenticateGithub.prototype._validateCredentials = function(credentials) {
 // Actually create the authorization token.
 AuthenticateGithub.prototype.getAuthorizationToken = function(username, password, twoFactorCode) {
   var _this = this,
-    github = createGithubApi(this);
+    github = createGithubApi(this),
+    headers = {};
 
   github.authenticate({
     type: 'basic',
@@ -70,15 +71,15 @@ AuthenticateGithub.prototype.getAuthorizationToken = function(username, password
     password: password
   });
 
+  if (twoFactorCode) headers['X-GitHub-OTP'] = twoFactorCode;
+
   return new Promise(function(resolve, reject) {
     github.authorization.create({
       scopes: ["user", "public_repo", "repo", "repo:status", "gist"],
       // timestamp helps prevent duplicate tokens.
       note: _this.note + ' (' + _this.timestamp() + ')',
       note_url: _this.noteUrl,
-      headers: {
-        "X-GitHub-OTP": twoFactorCode
-      }
+      headers: headers
     }, function(err, res) {
       if (err) reject(err);
       else resolve(res.token);
