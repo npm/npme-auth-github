@@ -8,7 +8,7 @@ var _ = require('lodash'),
 // the token is not found in the DB.
 function SessionGithub(opts) {
   _.extend(this, {
-    client: redis.createClient(),
+    client: redis.createClient(process.env.LOGIN_CACHE_REDIS),
     githubHost: 'api.github.com',
     debug: true,
     githubPathPrefix: '/api/v3'
