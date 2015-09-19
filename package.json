@@ -15,7 +15,7 @@
     "github": "0.2.2",
     "github-url-from-git": "^1.4.0",
     "lodash": "^2.4.1",
-    "redis": "^0.12.1",
+    "redis": "^1.0.0",
     "request": "^2.47.0"
   },
   "license": "ISC",
