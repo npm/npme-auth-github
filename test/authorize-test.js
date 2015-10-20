@@ -394,6 +394,40 @@ Lab.experiment('authorize', function() {
     });
   });
 
+  Lab.test("it should append '/' on to the fetched package url if credentials.path is not prefixed with one", function(done) {
+
+    // HTTP response for loading package.json
+    var packageApi = nock('http://frontdoor.npmjs.com')
+      .get('/@npm-test/foo?sharedFetchSecret=' + config.sharedFetchSecret)
+      .reply(200, JSON.stringify({
+        repository: { url: 'http://github.npmjs.com/npm-test/foo.git' }
+      }));
+
+    // HTTP response for use with read/write permissions on repo.
+    var githubApi = nock('https://github.example.com')
+      .get('/api/v3/repos/npm-test/foo?access_token=banana')
+      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'))
+
+    var ga = new AuthorizeGithub({
+      frontDoorHost: 'http://frontdoor.npmjs.com',
+      debug: false
+    });
+
+    ga.authorize({
+      method: 'GET',
+      headers: {
+        'authorization': 'Bearer banana'
+      },
+      path: '@npm-test/foo'
+    }, function(err, authorized) {
+      assert(authorized);
+
+      packageApi.done();
+      githubApi.done();
+      done();
+    });
+  });
+
   Lab.test("it should return an error if bearer token can't be parsed", function(done) {
 
     var ga = new AuthorizeGithub({
