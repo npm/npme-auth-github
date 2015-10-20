@@ -17,6 +17,7 @@ function AuthorizeGithub(opts) {
     debug: false,
     frontDoorHost: config.frontDoorHost,
     githubHost: config.githubHost,
+    githubOrg: config.githubOrg,
     untrustedPackageJson: null,
     githubPathPrefix: '/api/v3'
   }, opts);
@@ -79,6 +80,8 @@ AuthorizeGithub.prototype.isAuthorized = function() {
     _this.loadPackageJSON().then(function(packageJson) {
       return _this.parseGitUrl(packageJson);
     }).then(function(githubParams) {
+      if (_this.githubOrg && githubParams.org !== _this.githubOrg) return reject(Error('invalid organization name'));
+
       var github = createGithubApi(_this);
 
       // setup github to use OAuth Access Token.
