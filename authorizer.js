@@ -6,7 +6,8 @@ var logger = require('@npm/enterprise-configurator').logger(),
   request = require('request'),
   createGithubApi = require('./create-github-api.js'),
   config = require('@npm/enterprise-configurator').Config(),
-  Session = require('./session');
+  Session = require('./session'),
+  u = require('url');
 
 function AuthorizeGithub(opts) {
   _.extend(this, {
@@ -126,7 +127,7 @@ AuthorizeGithub.prototype.loadPackageJSON = function() {
   var _this = this;
 
   return new Promise(function(resolve, reject) {
-    request.get(_this.frontDoorHost + _this.packagePath + '?sharedFetchSecret=' + config.sharedFetchSecret, {
+    request.get(u.resolve(_this.frontDoorHost, _this.packagePath + '?sharedFetchSecret=' + config.sharedFetchSecret), {
       json: true
     }, function(err, result) {
       if (err) reject(err);
