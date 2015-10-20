@@ -300,7 +300,6 @@ Lab.experiment('isAuthorized', function() {
     });
   });
 
-
   Lab.test('authorization succeeds on publish, if user can push', function(done) {
 
     // HTTP response for loading package.json
@@ -320,6 +319,62 @@ Lab.experiment('isAuthorized', function() {
       packagePath: '/@npm-test/foo',
       token: 'banana',
       scope: 'publish',
+      debug: false
+    });
+
+    ga.isAuthorized().done(function(authorized) {
+      assert(authorized);
+
+      packageApi.done();
+      githubApi.done();
+      done();
+    });
+  });
+
+  Lab.test('authorization fails on publish, if git-URL-org does not match githubOrg', function(done) {
+
+    // HTTP response for loading package.json
+    var packageApi = nock('http://frontdoor.npmjs.com')
+      .get('/@npm-test/foo?sharedFetchSecret=' + config.sharedFetchSecret)
+      .reply(200, JSON.stringify({
+        repository: { url: 'http://github.npmjs.com/npm-test/foo.git' }
+      }));
+
+    var ga = new AuthorizeGithub({
+      frontDoorHost: 'http://frontdoor.npmjs.com',
+      packagePath: '/@npm-test/foo',
+      token: 'banana',
+      scope: 'publish',
+      githubOrg: 'foobar',
+      debug: false
+    });
+
+    ga.isAuthorized().catch(function(err) {
+      assert.equal(err.message, 'invalid organization name');
+      done();
+    });
+  });
+
+  Lab.test('authorization succeeds on publish, if git-URL-org matches githubOrg', function(done) {
+
+    // HTTP response for loading package.json
+    var packageApi = nock('http://frontdoor.npmjs.com')
+      .get('/@npm-test/foo?sharedFetchSecret=' + config.sharedFetchSecret)
+      .reply(200, JSON.stringify({
+        repository: { url: 'http://github.npmjs.com/npm-test/foo.git' }
+      }));
+
+    // HTTP response for use with read/write permissions on repo.
+    var githubApi = nock('https://github.example.com')
+      .get('/api/v3/repos/npm-test/foo?access_token=banana')
+      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'))
+
+    var ga = new AuthorizeGithub({
+      frontDoorHost: 'http://frontdoor.npmjs.com',
+      packagePath: '/@npm-test/foo',
+      token: 'banana',
+      scope: 'publish',
+      githubOrg: 'npm-test',
       debug: false
     });
 
