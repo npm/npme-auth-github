@@ -4,7 +4,7 @@
   "description": "GitHub authentication and authorization strategy for npm Enterprise",
   "repository": {
     "type": "git",
-    "url": "https://github.com/npm/npme-auth-github.git"
+    "url": "https://github.com/npm/npmo-auth-github.git"
   },
   "scripts": {
     "test": "lab -v -c --timeout 1000 test/ --ignore '$$bole'"
