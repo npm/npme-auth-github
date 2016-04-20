@@ -13,7 +13,7 @@ function AuthenticateGithub(opts) {
     githubPathPrefix: '/api/v3',
     githubOrg: config.githubOrg,
     // label the token that we generate.
-    note: 'npm On-Site authentication',
+    note: 'npm Enterprise login',
     noteUrl: 'https://www.npmjs.org'
   }, opts);
 }
