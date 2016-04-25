@@ -28,7 +28,7 @@ Lab.experiment('getAuthorizationToken', function() {
       })
       .post('/api/v3/authorizations', {
         scopes: ["user","public_repo","repo","repo:status","gist"],
-        note: 'npm On-Site authentication (0)',
+        note: 'npm Enterprise login (0)',
         note_url: 'https://www.npmjs.org'
       })
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
@@ -58,7 +58,7 @@ Lab.experiment('getAuthorizationToken', function() {
       })
       .post('/api/v3/authorizations', {
         scopes: ["user","public_repo","repo","repo:status","gist"],
-        note: 'npm On-Site authentication (0)',
+        note: 'npm Enterprise login (0)',
         note_url: 'https://www.npmjs.org'
       })
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
@@ -129,7 +129,7 @@ Lab.experiment('getAuthorizationToken', function() {
       })
       .post('/api/v3/authorizations', {
         scopes: ["user","public_repo","repo","repo:status","gist"],
-        note: 'npm On-Site authentication (0)',
+        note: 'npm Enterprise login (0)',
         note_url: 'https://www.npmjs.org'
       })
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'))
@@ -163,7 +163,7 @@ Lab.experiment('getAuthorizationToken', function() {
       })
       .post('/api/v3/authorizations', {
         scopes: ["user","public_repo","repo","repo:status","gist"],
-        note: 'npm On-Site authentication (0)',
+        note: 'npm Enterprise login (0)',
         note_url: 'https://www.npmjs.org'
       })
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'))
@@ -198,7 +198,7 @@ Lab.experiment('authenticate', function() {
       })
       .post('/api/v3/authorizations', {
         scopes: ["user","public_repo","repo","repo:status","gist"],
-        note: 'npm On-Site authentication (0)',
+        note: 'npm Enterprise login (0)',
         note_url: 'https://www.npmjs.org'
       })
       .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
