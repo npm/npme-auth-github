@@ -147,7 +147,9 @@ Lab.experiment('loadPackageJSON', function() {
     // HTTP response for user with read-only permissions.
     var githubApi = nock('https://github.example.com:4444')
       .get('/api/v3/repos/npm-test/foo?access_token=banana')
-      .reply(200, fs.readFileSync('./test/fixtures/read-only.json'))
+      .reply(200, fs.readFileSync('./test/fixtures/read-only.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
 
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
@@ -183,7 +185,9 @@ Lab.experiment('isAuthorized', function() {
     // HTTP response for user with read-only permissions.
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/repos/npm-test/foo?access_token=banana')
-      .reply(200, fs.readFileSync('./test/fixtures/read-only.json'))
+      .reply(200, fs.readFileSync('./test/fixtures/read-only.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
 
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
@@ -242,7 +246,9 @@ Lab.experiment('isAuthorized', function() {
     // HTTP response for use with read/write permissions on repo.
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/repos/npm-test/foo?access_token=banana')
-      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'))
+      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
 
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
@@ -281,7 +287,9 @@ Lab.experiment('isAuthorized', function() {
     // HTTP response for user with read-only permissions
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/repos/npm-test/foo?access_token=banana')
-      .reply(200, fs.readFileSync('./test/fixtures/read-only.json'))
+      .reply(200, fs.readFileSync('./test/fixtures/read-only.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
 
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
@@ -312,7 +320,9 @@ Lab.experiment('isAuthorized', function() {
     // HTTP response for use with read/write permissions on repo.
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/repos/npm-test/foo?access_token=banana')
-      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'))
+      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
 
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
@@ -367,7 +377,9 @@ Lab.experiment('isAuthorized', function() {
     // HTTP response for use with read/write permissions on repo.
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/repos/npm-test/foo?access_token=banana')
-      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'))
+      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
 
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
@@ -427,7 +439,9 @@ Lab.experiment('authorize', function() {
     // HTTP response for use with read/write permissions on repo.
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/repos/npm-test/foo?access_token=banana')
-      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'))
+      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
 
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
@@ -461,7 +475,9 @@ Lab.experiment('authorize', function() {
     // HTTP response for use with read/write permissions on repo.
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/repos/npm-test/foo?access_token=banana')
-      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'))
+      .reply(200, fs.readFileSync('./test/fixtures/read-write.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
 
     var ga = new AuthorizeGithub({
       frontDoorHost: 'http://frontdoor.npmjs.com',
@@ -534,7 +550,9 @@ Lab.experiment('whoami', function() {
 
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/user?access_token=footoken')
-      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'));
+      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      });
 
     ga.whoami({
       method: 'GET',

@@ -31,7 +31,9 @@ Lab.experiment('getAuthorizationToken', function() {
         note: 'npm Enterprise login (0)',
         note_url: 'https://www.npmjs.org'
       })
-      .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
+      .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      });
 
     authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').done(function(token) {
       Code.expect(token).to.deep.equal('cc84252fd8061b232beb5e345f33b13d120c236c');
@@ -61,7 +63,9 @@ Lab.experiment('getAuthorizationToken', function() {
         note: 'npm Enterprise login (0)',
         note_url: 'https://www.npmjs.org'
       })
-      .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
+      .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      });
 
     authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').done(function(token) {
       Code.expect(token).to.deep.equal('cc84252fd8061b232beb5e345f33b13d120c236c');
@@ -132,7 +136,9 @@ Lab.experiment('getAuthorizationToken', function() {
         note: 'npm Enterprise login (0)',
         note_url: 'https://www.npmjs.org'
       })
-      .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'))
+      .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
       .get('/api/v3/orgs/acme/members/bcoe-test')
       .reply(204);
 
@@ -201,7 +207,9 @@ Lab.experiment('authenticate', function() {
         note: 'npm Enterprise login (0)',
         note_url: 'https://www.npmjs.org'
       })
-      .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'));
+      .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      });
 
     authenticateGithub.authenticate({
       body: {

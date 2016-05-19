@@ -28,7 +28,9 @@ Lab.experiment('get', function() {
 
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/user?access_token=foobar')
-      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'));
+      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      });
 
     session.get(token, function(err, data) {
       Code.expect(data.name).to.deep.equal('bcoe');
@@ -46,7 +48,9 @@ Lab.experiment('get', function() {
 
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/user?access_token=foobar')
-      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'));
+      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      });
 
     session.get(token, function(err, data) {
       githubApi.done();
