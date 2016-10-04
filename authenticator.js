@@ -86,7 +86,7 @@ AuthenticateGithub.prototype.getAuthorizationToken = function(username, password
     });
   }).then(this.githubOrg && function(token) {
     return new Promise(function(resolve, reject) {
-      github.orgs.getMember({ user: username, org: _this.githubOrg }, function(err, res) {
+      github.orgs.checkMembership({ org: _this.githubOrg, user: username}, function (err, res) {
         if (err) reject(err);
         else resolve(token);
       });
