@@ -89,7 +89,7 @@ AuthenticateGithub.prototype.getAuthorizationToken = function(username, password
     console.log('orgs are', orgs);
     return Promise.any([].concat(orgs).map(function (githubOrg) {
       return new Promise(function(resolve, reject) {
-         github.orgs.getMember({ user: username, org: githubOrg }, function(err, res) {
+         github.orgs.checkMembership({ user: username, org: githubOrg }, function(err, res) {
            if (err) reject(err);
            else resolve(token);
          });

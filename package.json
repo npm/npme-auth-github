@@ -11,9 +11,8 @@
     "release": "standard-version"
   },
   "dependencies": {
-    "@npm/enterprise-configurator": "~0.1.8",
     "bluebird": "^3.4.0",
-    "github": "^0.2.4",
+    "github": "^3.1.1",
     "github-url-from-git": "^1.4.0",
     "lodash": "^4.12.0",
     "redis": "^2.5.3",
@@ -21,6 +20,7 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "@npm/enterprise-configurator": "git://github.com/npm/enterprise-configurator#v0.1.26",
     "code": "^2.3.0",
     "lab": "^10.6.0",
     "nock": "^8.0.0",
