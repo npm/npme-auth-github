@@ -85,12 +85,19 @@ AuthenticateGithub.prototype.getAuthorizationToken = function(username, password
       else resolve(res.token);
     });
   }).then(this.githubOrg && function(token) {
-    return new Promise(function(resolve, reject) {
-      github.orgs.checkMembership({ org: _this.githubOrg, user: username}, function (err, res) {
-        if (err) reject(err);
-        else resolve(token);
+    var orgs = !Array.isArray(_this.githubOrg) ? _this.githubOrg.split(/,[\s]*/) : value;
+    console.log('orgs are', orgs);
+    return Promise.any([].concat(orgs).map(function (githubOrg) {
+      return new Promise(function(resolve, reject) {
+         github.orgs.checkMembership({ user: username, org: githubOrg }, function(err, res) {
+           if (err) reject(err);
+           else resolve(token);
+         });
       });
-    }).catch(function(err) {
+    })).catch(function(err) {
+      // handle possible AggregateError, which is a collection of promise errors
+      err = err instanceof Promise.AggregateError ? err[0] : err;
+
       if (err.code === 404) {
         err.code = 401;
         err.message = 'unauthorized';

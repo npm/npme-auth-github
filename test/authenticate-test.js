@@ -150,6 +150,42 @@ Lab.experiment('getAuthorizationToken', function() {
     });
   });
 
+  Lab.it("returns authorization token if username and password are valid, and user is a member of at least one org", function(done) {
+    var authenticateGithub = new AuthenticateGithub({
+      githubHost: 'https://github.example.com',
+      githubOrg: 'org1, acme, org3',
+      timestamp: function() {
+        return 0;
+      },
+      debug: false
+    });
+
+    var packageApi = nock('https://github.example.com', {
+        // we should populate the auth headers with appropriate
+        // username and password.
+        reqheaders: {
+          'authorization': 'Basic YmNvZS10ZXN0OmZvb2Jhcg=='
+        }
+      })
+      .post('/api/v3/authorizations', {
+        scopes: ["user","public_repo","repo","repo:status","gist"],
+        note: 'npm Enterprise login (0)',
+        note_url: 'https://www.npmjs.org'
+      })
+      .reply(200, fs.readFileSync('./test/fixtures/authenticate-success.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      })
+      .get('/api/v3/orgs/acme/members/bcoe-test')
+      .reply(204);
+
+    authenticateGithub.getAuthorizationToken('bcoe-test', 'foobar').nodeify(function(err, token) {
+      Code.expect(!!err).to.equal(false);
+      Code.expect(token).to.deep.equal('cc84252fd8061b232beb5e345f33b13d120c236c');
+      packageApi.done();
+      done();
+    });
+  });
+
   Lab.it("executes callback with an error if user is not a member of the org", function(done) {
     var authenticateGithub = new AuthenticateGithub({
       githubHost: 'https://github.example.com',
