@@ -45,7 +45,7 @@ SessionGithub.prototype._githubLookup = function(key, cb) {
     token: token
   });
 
-  github.user.get({}, function(err, res) {
+  github.users.get({}, function(err, res) {
     if (err) cb(err);
     else if (res.code < 200 || res.code >= 400) cb(Error('status = ' + res.code));
     else {
