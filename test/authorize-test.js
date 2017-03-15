@@ -120,19 +120,20 @@ Lab.experiment('loadPackageJSON', function() {
     });
   });
 
-  Lab.test('gracefully handles request returning an error', function(done) {
+  Lab.test.only('gracefully handles request returning an error', function(done) {
     nock.cleanAll();
 
     var ga = new AuthorizeGithub({
-      frontDoorHost: 'http://frontdoor.npmjs.com',
+      frontDoorHost: '/not/a/url',
       packagePath: '/@npm/foobar',
       debug: false
     });
 
-    ga.loadPackageJSON().catch(function(err) {
-      Code.expect(err.message).to.match(/getaddrinfo ENOTFOUND/);
-      done();
-    }).done();
+    ga.loadPackageJSON()
+      .catch(function(err) {
+        Code.expect(err.message).to.match(/Invalid URI/);
+        done();
+      }).done();
   });
 
   Lab.test('uses port parsed from githubHost', function(done) {

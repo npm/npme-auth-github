@@ -7,7 +7,7 @@
     "url": "https://github.com/npm/npme-auth-github.git"
   },
   "scripts": {
-    "test": "lab -v -c --timeout 1000 test/ --ignore '$$bole'",
+    "test": "lab -v -c --timeout 3000 test/ --ignore '$$bole'",
     "release": "standard-version"
   },
   "dependencies": {
