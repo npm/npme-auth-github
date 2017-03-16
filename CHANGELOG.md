@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/npm/npme-auth-github/compare/v1.5.0...v1.5.1) (2017-03-16)
+
+
+### Bug Fixes
+
+* **authorizer:** Fix organization check when multi-org is configured ([#40](https://github.com/npm/npme-auth-github/issues/40)) ([f5c3954](https://github.com/npm/npme-auth-github/commit/f5c3954))
+
+
+
 <a name="1.5.0"></a>
 # [1.5.0](https://github.com/npm/npme-auth-github/compare/v1.2.3...v1.5.0) (2017-03-15)
 
