@@ -85,7 +85,7 @@ AuthenticateGithub.prototype.getAuthorizationToken = function(username, password
       else resolve(res.token);
     });
   }).then(this.githubOrg && function(token) {
-    var orgs = !Array.isArray(_this.githubOrg) ? _this.githubOrg.split(/,[\s]*/) : value;
+    var orgs = Array.isArray(_this.githubOrg) ? _this.githubOrg : _this.githubOrg.split(/,[\s]*/);
     return Promise.any([].concat(orgs).map(function (githubOrg) {
       return new Promise(function(resolve, reject) {
          github.orgs.checkMembership({ user: username, org: githubOrg }, function(err, res) {

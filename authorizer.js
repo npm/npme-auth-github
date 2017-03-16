@@ -80,7 +80,12 @@ AuthorizeGithub.prototype.isAuthorized = function() {
     _this.loadPackageJSON().then(function(packageJson) {
       return _this.parseGitUrl(packageJson);
     }).then(function(githubParams) {
-      if (_this.githubOrg && githubParams.org !== _this.githubOrg) return reject(Error('invalid organization name'));
+      if (_this.githubOrg) {
+        var orgs = Array.isArray(_this.githubOrg) ? _this.githubOrg : _this.githubOrg.split(/,[\s]*/);
+        if (orgs.indexOf(githubParams.org) === -1) {
+          return reject(Error('invalid organization name'));
+        }
+      }
 
       var github = createGithubApi(_this);
 
