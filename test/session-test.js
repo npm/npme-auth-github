@@ -22,12 +22,15 @@ Lab.experiment('get', function() {
 
   Lab.test('if user is not found in DB, user is looked up via GitHub API', function(done) {
     var session = new SessionGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      debug: false
     });
 
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/user?access_token=foobar')
-      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'));
+      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      });
 
     session.get(token, function(err, data) {
       Code.expect(data.name).to.deep.equal('bcoe');
@@ -39,12 +42,15 @@ Lab.experiment('get', function() {
 
   Lab.test('it creates session in Redis if user found in GitHub API', function(done) {
     var session = new SessionGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      debug: false
     });
 
     var githubApi = nock('https://github.example.com')
       .get('/api/v3/user?access_token=foobar')
-      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'));
+      .reply(200, fs.readFileSync('./test/fixtures/user-get.json'), {
+        'content-type': 'application/json; charset=utf-8'
+      });
 
     session.get(token, function(err, data) {
       githubApi.done();
@@ -59,7 +65,8 @@ Lab.experiment('get', function() {
 
   Lab.test('it returns an error if GitHub API returns non 200', function(done) {
     var session = new SessionGithub({
-      githubHost: 'https://github.example.com'
+      githubHost: 'https://github.example.com',
+      debug: false
     });
 
     var githubApi = nock('https://github.example.com')
