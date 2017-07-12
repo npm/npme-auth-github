@@ -1,6 +1,6 @@
 {
   "name": "@npm/npme-auth-github",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "GitHub authentication and authorization strategy for npm Enterprise",
   "repository": {
     "type": "git",

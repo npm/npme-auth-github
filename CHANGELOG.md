@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.5.3"></a>
+## [1.5.3](https://github.com/npm/npme-auth-github/compare/v1.5.2...v1.5.3) (2017-07-12)
+
+
+### Bug Fixes
+
+* [@npm](https://github.com/npm)/enterprise-configurator should be a dependency not a dev-dependency ([04f2ef9](https://github.com/npm/npme-auth-github/commit/04f2ef9))
+
+
+
 <a name="1.5.2"></a>
 ## [1.5.2](https://github.com/npm/npme-auth-github/compare/v1.5.1...v1.5.2) (2017-07-11)
 
